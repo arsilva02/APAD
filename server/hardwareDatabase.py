@@ -17,8 +17,14 @@ def createHardwareSet(client, hwSetName, initCapacity):
 
 # Function to query a hardware set by its name
 def queryHardwareSet(client, hwSetName):
-    # Query and return a hardware set from the database
-    pass
+
+    db = client.db #grab client db
+    hwSets = db.hardwareSets #grab hardware sets from db
+
+    myQuery = {"name":hwSetName} #query hardware sets that match the name
+    queried = hwSets.find_one(myQuery) #query based on name
+
+    return queried # returns query
 
 # Function to update the availability of a hardware set
 def updateAvailability(client, hwSetName, newAvailability):
