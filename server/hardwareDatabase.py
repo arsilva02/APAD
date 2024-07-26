@@ -21,7 +21,7 @@ def queryHardwareSet(client, hwSetName):
     db = client.db #grab client db
     hwSets = db.hardwareSets #grab hardware sets from db
 
-    myQuery = {"name":hwSetName} #query hardware sets that match the name
+    myQuery = {"hwName":hwSetName} #query hardware sets that match the name
     queried = hwSets.find_one(myQuery) #query based on name
 
     return queried # returns query
