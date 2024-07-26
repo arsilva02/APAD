@@ -13,7 +13,15 @@ HardwareSet = {
 # Function to create a new hardware set
 def createHardwareSet(client, hwSetName, initCapacity):
     # Create a new hardware set in the database
-    pass
+    db = client.db #connect to db
+    hwSets = db.hardwareSets #grab hw sets
+
+    #create doc
+    hwToAdd = {'hwName':hwSetName,
+               'capacity': initCapacity,
+               'availability':initCapacity}
+    
+    hwSets.insert_one(hwToAdd) #insert into db
 
 # Function to query a hardware set by its name
 def queryHardwareSet(client, hwSetName):
