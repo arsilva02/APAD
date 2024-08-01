@@ -16,8 +16,13 @@ Project = {
 
 # Function to query a project by its ID
 def queryProject(client, projectId):
-    # Query and return a project from the database
-    pass
+    db = client.db #grab client db
+    projects = db.projects #grab projects sets from database
+    
+    myQuery = {"projectId":projectId} #query projects based on id
+    queried = projects.find_one(myQuery) #query based on id
+
+    return queried # returns query
 
 # Function to create a new project
 def createProject(client, projectName, projectId, description):
