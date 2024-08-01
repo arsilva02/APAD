@@ -58,6 +58,9 @@ def requestSpace(client, hwSetName, amount):
 
 # Function to get all hardware set names
 def getAllHwNames(client):
-    # Get and return a list of all hardware set names
-    pass
-
+    db = client.db #grab client db
+    hwSets = db.hardwareSets #grab hw sets from db
+    
+    allHWNames = hwSets.find({}, {'hwName':1}) #only gets hwnames from the query
+    
+    return [hw['hwName'] for hw in allHWNames] #returns all names in list format
