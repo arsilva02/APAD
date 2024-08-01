@@ -3,6 +3,10 @@ from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash  # Import check_password_hash for password verification
 from bson import ObjectId
 
+import hardwareDatabase
+import projectsDatabase
+import usersDatabase
+
 static_folder_path = r"C:\Users\s1003\Downloads\flask-mongo-master\flask-mongo-master\Frontend\dist"
 app = Flask(__name__, static_folder=static_folder_path)
 
