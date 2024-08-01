@@ -53,6 +53,10 @@ def requestSpace(client, hwSetName, amount):
         
         updateAvailability(client,hwSetName,newAvailability) #call update availability function
 
+        return True #hwset is available and amount was able to be deducted
+    
+    return False #hwset is either not available or amount exceeded what was available
+
 # Function to get all hardware set names
 def getAllHwNames(client):
     db = client.db #grab client db
