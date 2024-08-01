@@ -36,8 +36,13 @@ def queryHardwareSet(client, hwSetName):
 
 # Function to update the availability of a hardware set
 def updateAvailability(client, hwSetName, newAvailability):
-    # Update the availability of an existing hardware set
-    pass
+    db = client.db #grab client db
+    hwSets = db.hardwareSets #grab hw sets from db
+    
+    #hw_set = hwSets.find_one({'hwName':hwSetName}) #finds the set you want to update
+    
+    hwSets.update_one({'hwName':hwSetName}, {'$set': {'availability':newAvailability}})
+    #Sets based on the name, then sets based on the new availability
 
 # Function to request space from a hardware set
 def requestSpace(client, hwSetName, amount):
