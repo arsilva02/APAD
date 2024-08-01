@@ -27,7 +27,23 @@ def queryProject(client, projectId):
 # Function to create a new project
 def createProject(client, projectName, projectId, description):
     # Create a new project in the database
-    pass
+    db = client.db #grab client db
+    projects = db.projects #grab projects sets from database
+    
+    #empty hwSets dic
+    hwSets = {}
+    
+    #empty users list
+    users = []
+    
+    #create doc
+    projectToAdd = {'projectName':projectName,
+               'projectId': projectId,
+               'description':description,
+               'hwSets':hwSets,
+               'users':users}
+    
+    projects.insert_one(projectToAdd) #insert into db
 
 # Function to add a user to a project
 def addUser(client, projectId, userId):
