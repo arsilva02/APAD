@@ -50,8 +50,14 @@ def addUser(client, projectId, userId):
     # Create a new project in the database
     db = client.db #grab client db
     projects = db.projects #grab projects sets from database
+    
+    project = queryProject(client,projectId) #checks to make sure exists
 
-    projects.update_one({'projectId': projectId}, {'$push': {'users': userId}}) #pushes user
+    if project:
+        projects.update_one({'projectId': projectId}, {'$push': {'users': userId}}) #pushes user
+        return True #show that succeeds
+    
+    return False #show fail
 
 
 
