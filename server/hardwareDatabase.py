@@ -45,10 +45,7 @@ def updateAvailability(client, hwSetName, newAvailability):
 # Function to request space from a hardware set
 def requestSpace(client, hwSetName, amount):
     # Request a certain amount of hardware and update availability
-    db = client.db #grab client db
-    hwSets = db.hardwareSets #grab hw sets from db
-    
-    hw_set = hwSets.find_one({'hwName':hwSetName}) #finds the set you want to request from
+    hw_set = queryHardwareSet(client, hwSetName) #finds the set you want to request from
     
     if hw_set and amount <= hw_set['availability']: #checks if hw set exists and if amount can be requeseted
         
