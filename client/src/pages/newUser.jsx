@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Navbar from './navBar';
 import { BsFillInfoCircleFill } from "react-icons/bs";
+import axios from 'axios';
+
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -17,17 +19,17 @@ const AdminLogin = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, password, confirmPassword } = formData;
     const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
     const numberCheck = /[1234567890]/;
     
     if (username === '' || password === '' || confirmPassword === ''){
-        alert('All the fields are mandatory')
+        alert('All the fields are mandatory');
     }
     else if (password.length < 8){
-        alert("Not a Strong Password. There should be more than 8 characters")
+        alert("Not a Strong Password. There should be more than 8 characters");
     }
     else if (password !== confirmPassword) {
       alert('Passwords do not match');
@@ -39,9 +41,19 @@ const AdminLogin = () => {
         alert('Password must include at least one number');
     }
     else {
-      console.log(`Username: ${username}, Password: ${password}`);
-      alert('Account created successfully with Username:'+username);
-      window.location.href = '#/login';
+      try {
+        const response = await axios.post('/add_user', { username, password });
+        alert(response.data.message);
+        if (response.data.success) {
+          window.location.href = '/login';
+        }
+      } catch (error) {
+        if (error.response) {
+          alert(error.response.data.message);
+        } else {
+          console.error('There was an error!', error);
+        }
+      }
     }
   };
 
@@ -74,7 +86,7 @@ const AdminLogin = () => {
           onChange={handleChange}
         />
         <span className='i-tooltip'>
-        <BsFillInfoCircleFill color="#bf5700" fontSize="15px"/><span className='i-tooltiptext'>Password must be at least 8 characters long and include a number and a special character.</span>
+          <BsFillInfoCircleFill color="#bf5700" fontSize="15px"/><span className='i-tooltiptext'>Password must be at least 8 characters long and include a number and a special character.</span>
         </span>
         <br /><br />
         <label className='labelPass'>

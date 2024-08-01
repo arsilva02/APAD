@@ -99,3 +99,37 @@ body{
   visibility: visible;
   opacity: 1;
 }
+
+
+.formDataResource{
+  padding-top: 15px;
+  padding-left: 0px;
+}
+
+.resource{
+  padding-top: 20px;
+  padding-left: 500px;
+}
+
+.ButtonHardware{
+  padding: 10px 10px 10px 10px;
+  background-color: #bf5700 ;
+  color: #ffffff;
+  border-radius: 10px;
+  border: none;
+  margin-top: 40px;
+  margin-left: 40px;
+}
+
+.resourceHeading,
+.resourceRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.formDataResource {
+  margin-right: 0px;
+  font-weight: bold;
+}
