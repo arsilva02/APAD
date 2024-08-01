@@ -39,8 +39,6 @@ def updateAvailability(client, hwSetName, newAvailability):
     db = client.db #grab client db
     hwSets = db.hardwareSets #grab hw sets from db
     
-    #hw_set = hwSets.find_one({'hwName':hwSetName}) #finds the set you want to update
-    
     hwSets.update_one({'hwName':hwSetName}, {'$set': {'availability':newAvailability}})
     #Sets based on the name, then sets based on the new availability
 
