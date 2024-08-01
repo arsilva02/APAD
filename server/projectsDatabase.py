@@ -47,8 +47,14 @@ def createProject(client, projectName, projectId, description):
 
 # Function to add a user to a project
 def addUser(client, projectId, userId):
-    # Add a user to the specified project
-    pass
+    # Create a new project in the database
+    db = client.db #grab client db
+    projects = db.projects #grab projects sets from database
+
+    #projects.update_one({'projectId':projectId}, {'$set': {'userId':userId}})
+
+
+
 
 # Function to update hardware usage in a project
 def updateUsage(client, projectId, hwSetName):
