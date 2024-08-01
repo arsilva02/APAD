@@ -73,6 +73,9 @@ def updateUsage(client, projectId, hwSetName):
 
     if project:
         projects.update_one({'projectId': projectId}, {'$set': {'hwSets.' + hwSetName}}) #add hwset
+        return True #successful
+    
+    return False #failed
         
 
 # Function to check out hardware for a project
