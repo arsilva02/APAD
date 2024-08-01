@@ -51,7 +51,8 @@ def addUser(client, projectId, userId):
     db = client.db #grab client db
     projects = db.projects #grab projects sets from database
 
-    #projects.update_one({'projectId':projectId}, {'$set': {'userId':userId}})
+    projects.update_one({'projectId': projectId}, {'$push': {'users': userId}}) #pushes user
+
 
 
 
