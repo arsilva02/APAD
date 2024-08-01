@@ -1,7 +1,7 @@
 # Import necessary libraries and modules
 from pymongo import MongoClient
 
-import hardwareDB
+import hardwareDatabase
 
 '''
 Structure of Project entry:
@@ -81,7 +81,22 @@ def updateUsage(client, projectId, hwSetName):
 # Function to check out hardware for a project
 def checkOutHW(client, projectId, hwSetName, qty, userId):
     # Check out hardware for the specified project and update availability
-    pass
+    db = client.db  # grab client db
+    projects = db.projects  # grab projects sets from database
+    hwSets = db.hardwareSets  # grab hardware sets collection
+
+    # Find the project and the hardware set
+    project = queryProject(client,projectId)
+    hw_set = hardwareDatabase.queryHardwareSet(client,projectId)
+
+  
+    # Check if hardware set exists and has enough availability
+    if project and hw_set:
+        return hardwareDatabase.requestSpace(client,hwSetName,qty) #update availability
+    #returns true if succeeds
+    #returns false if not
+    else:
+        return False #returns false if project or hw set does not exist
 
 # Function to check in hardware for a project
 def checkInHW(client, projectId, hwSetName, qty, userId):
