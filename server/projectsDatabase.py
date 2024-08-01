@@ -66,7 +66,14 @@ def addUser(client, projectId, userId):
 # Function to update hardware usage in a project
 def updateUsage(client, projectId, hwSetName):
     # Update the usage of a hardware set in the specified project
-    pass
+    db = client.db  # grab client db
+    projects = db.projects  # grab projects sets from database
+
+    project = queryProject(client,projectId) #checks to make sure exists
+
+    if project:
+        projects.update_one({'projectId': projectId}, {'$set': {'hwSets.' + hwSetName}}) #add hwset
+        
 
 # Function to check out hardware for a project
 def checkOutHW(client, projectId, hwSetName, qty, userId):
