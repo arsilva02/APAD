@@ -1,0 +1,101 @@
+body{
+  color:black;
+}
+
+.nav{
+  background-color: #bf5700 ;
+  color: #ffffff;
+  text-align: center;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  
+}
+
+.routerElements{
+  padding-top: 250px;
+  padding-left: 300px;
+}
+
+.routerButton{
+
+  padding: 20px 20px 20px 20px;
+  background-color: #bf5700 ;
+  color: #ffffff;
+  border-radius: 10px;
+  border: none;
+}
+
+.linkSpace{
+  padding-left: 25px;
+  padding-right: 25px; 
+}
+
+.homeButton{
+  padding-left: 1290px;
+  padding-top: 50px;
+}
+
+.textBox{
+  padding: 10px 10px 10px 10px;
+  background-color: #ffffff ;
+  border-color: #bf5700;
+  border-width: 2px;
+  border-radius: 15px;
+}
+
+.signUp{
+  padding-top: 70px;
+  padding-left: 550px;
+}
+
+.labelSignUp{
+  padding-right: 22px;
+}
+
+.labelPass{
+  padding-right: 13px;
+}
+
+.ButtonSign{
+  padding: 10px 10px 10px 10px;
+  background-color: #bf5700 ;
+  color: #ffffff;
+  border-radius: 10px;
+  border: none;
+  margin-top: 40px;
+  margin-left: 70px;
+}
+
+.pageText{
+  padding-top: 70px;
+  text-align: center;
+}
+
+.i-tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.i-tooltip .i-tooltiptext {
+  visibility: hidden;
+  width: 220px;
+  background-color: #bf5700;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 0%; /* Position above the icon */
+  left: 50%;
+  margin-left: 10px; /* Center the tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.i-tooltip:hover .i-tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
