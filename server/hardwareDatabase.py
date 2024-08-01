@@ -38,9 +38,13 @@ def queryHardwareSet(client, hwSetName):
 def updateAvailability(client, hwSetName, newAvailability):
     db = client.db #grab client db
     hwSets = db.hardwareSets #grab hw sets from db
+    try:
+        hwSets.update_one({'hwName':hwSetName}, {'$set': {'availability':newAvailability}})
+        #Sets based on the name, then sets based on the new availability
+        return True
     
-    hwSets.update_one({'hwName':hwSetName}, {'$set': {'availability':newAvailability}})
-    #Sets based on the name, then sets based on the new availability
+    except Exception as e:
+        return False #return as false if not available
 
 # Function to request space from a hardware set
 def requestSpace(client, hwSetName, amount):
