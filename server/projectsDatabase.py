@@ -82,8 +82,6 @@ def updateUsage(client, projectId, hwSetName):
 def checkOutHW(client, projectId, hwSetName, qty, userId):
     # Check out hardware for the specified project and update availability
     db = client.db  # grab client db
-    projects = db.projects  # grab projects sets from database
-    hwSets = db.hardwareSets  # grab hardware sets collection
 
     # Find the project and the hardware set
     project = queryProject(client,projectId)
