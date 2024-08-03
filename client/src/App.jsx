@@ -2,6 +2,10 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Signup from './pages/signUp';
+import Login from './pages/login';
+import Project from './pages/project';
+import NewProject from './pages/newProject';
+import Hardware from './pages/hardware';
 
 import './App.css';
 
@@ -11,6 +15,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/project" element={<Project />} />
+        <Route path="/newProject" element={<NewProject />} />
+        <Route path="/hardware" element={<Hardware />} />
       </Routes>
     </div>
   );

@@ -2,12 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './navBar';
 
-const Project = () => {
+const Hardware = () => {
   return (
     <>
     <Navbar />
     <div className="home">
-      <h1>Project Page</h1>
+      <h1>Hardware Page</h1>
       <div className="routerElements">
         <Link to="/project" className="linkSpace">
           <button className="routerButton">Submit</button>
@@ -20,4 +20,4 @@ const Project = () => {
   );
 };
 
-export default Project;
+export default Hardware;
