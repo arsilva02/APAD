@@ -148,8 +148,12 @@ def create_project():
         return jsonify({'message': 'Missing required fields', 'success': False}), 400
 
     try:
-        createProject(client, project_name, project_id, description)
-        return jsonify({'message': 'Project created successfully', 'success': True}), 201
+        check = createProject(client, project_name, project_id, description) #Check is project is created
+        if check:
+            return jsonify({'message': 'Project created successfully', 'success': True}), 201
+        
+        return jsonify({'message': 'Project cannot be created successfully: Project ID already exists', 'success': True}), 201
+
 
     except Exception as e:
         return jsonify({'message': str(e), 'success': False}), 500
