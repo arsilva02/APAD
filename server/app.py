@@ -118,7 +118,24 @@ def check_out():
 
 @app.route('/check_in', methods=['POST'])
 def check_in():
-    return jsonify({})
+    data = request.get_json()
+    project_id = data.get('projectId')
+    hw_name = data.get('hwName')
+    qty = data.get('quantity')
+    user_id = data.get('userId')
+
+    if not all([project_id, hw_name, qty, user_id]):
+        return jsonify({'message': 'Missing required fields', 'success': False}), 400
+
+    try:
+        success = checkInHW(client, project_id, hw_name, qty, user_id)
+        if success:
+            return jsonify({'message': 'Hardware checked in successfully', 'success': True}), 200
+        else:
+            return jsonify({'message': 'Unable to check in hardware', 'success': False}), 500
+
+    except Exception as e:
+        return jsonify({'message': str(e), 'success': False}), 500
 
 @app.route('/inventory', methods=['GET'])
 def check_inventory():
