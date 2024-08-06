@@ -127,7 +127,3 @@ def checkInHW(client, projectId, hwSetName, qty, userId):
     #returns false if not
     else:
         return False #returns false if project or hw set does not exist
-
-
-    
-
