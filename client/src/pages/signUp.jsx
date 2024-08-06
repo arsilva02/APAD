@@ -46,7 +46,7 @@ const Signup = () => {
         const response = await axios.post('http://localhost:5000/add_user', { username, password });
         setMessage(response.data.message);
         if (response.data.success) {
-          window.location.href = '/';
+          window.location.href = '/login';
         }
       } catch (error) {
         if (error.response) {
@@ -61,52 +61,51 @@ const Signup = () => {
   return (
     <div>
       <Navbar />
-      <Link to={'/'}><button className='routerButton'>Home</button></Link>
-      <form className='signUp' onSubmit={handleSubmit}>
-        <label className='labelSignUp'>
-          User ID: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </label>
-        <input
-          type="text"
-          placeholder="Enter email or User ID"
-          name="username"
-          autoComplete="username"
-          className='textBox'
-          value={formData.username}
-          onChange={handleChange}
-        />
-        <br /><br />
-        <label className='labelPass'>
-          Password: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </label>
-        <input
-          type="password"
-          placeholder="Enter Password"
-          name="password"
-          autoComplete="current-password"
-          className='textBox'
-          value={formData.password}
-          onChange={handleChange}
-        />
-        <span className='i-tooltip'>
-          <BsFillInfoCircleFill color="#bf5700" fontSize="15px"/><span className='i-tooltiptext'>Password must be at least 8 characters long and include a number and a special character.</span>
-        </span>
-        <br /><br />
-        <label className='labelPass'>
-          Confirm Password:
-        </label>
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          name="confirmPassword"
-          className='textBox'
-          value={formData.confirmPassword}
-          onChange={handleChange}
-        />
-        <br />
-        <button type="submit" className='ButtonSign'>
-          Create Account
-        </button>
+      <div className='homeTop'>
+        <Link to={'/'} ><button className='homeButton'>Home</button></Link>
+      </div>
+      <p className='otherParagraph'>Please create your account by giving unique username and a password</p>
+      <form onSubmit={handleSubmit}>
+        <div className='formGroup'>
+          <label className='labelSignUp'>User ID: </label>
+          <input
+            type="text"
+            placeholder="Enter email or User ID"
+            name="username"
+            autoComplete="username"
+            className='textBox'
+            value={formData.username}
+            onChange={handleChange}
+          />
+        </div>
+        <div className='formGroup'>
+          <label className='labelSignUp'>Password: </label>
+          <span className='i-tooltip'>
+            <BsFillInfoCircleFill color="#bf5700" fontSize="15px"/>
+            <span className='i-tooltiptext'>Password must be at least 8 characters long and include a number and a special character.</span>
+          </span>
+          <input
+            type="password"
+            placeholder="Enter Password"
+            name="password"
+            autoComplete="current-password"
+            className='textBox'
+            value={formData.password}
+            onChange={handleChange}
+          />
+        </div>
+        <div className='formGroup'>
+          <label className='labelSignUp'>Confirm Password: </label>
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            name="confirmPassword"
+            className='textBox'
+            value={formData.confirmPassword}
+            onChange={handleChange}
+          />
+        </div>
+        <button type="submit" className='ButtonSign buttonPlace'>Create Account</button>
       </form>
       <p>{message}</p>
     </div>

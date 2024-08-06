@@ -7,7 +7,7 @@ const Home = () => {
     <>
     <Navbar />
     <div className="home">
-      <h1>Home Page</h1>
+      <p className='homeParagraph'>Welcome to oru Hardware as a Service (HaaS). Please Sign-In or Login to avail the hardware</p>
       <div className="routerElements">
         <Link to="/signup" className="linkSpace">
           <button className="routerButton">New User?</button>
@@ -19,7 +19,7 @@ const Home = () => {
           <button className="routerButton">Create Project</button>
         </Link>
         <Link to="/newProject" className="linkSpace">
-          <button className="routerButton">Project</button>
+          <button className="routerButton">Join Project</button>
         </Link>
         <Link to="/hardware" className="linkSpace">
           <button className="routerButton">Hardware</button>

@@ -1,6 +1,6 @@
 export default function Navbar(){
     return(
-        <nav>
+        <nav className="nav">
             User Management
         </nav>
     )
