@@ -1,5 +1,6 @@
 # Import necessary libraries and modules
 from pymongo import MongoClient
+from werkzeug.security import check_password_hash
 
 '''
 Structure of User entry:
@@ -23,7 +24,7 @@ def addUser(client, username, password):
 
         #Ensure the userId is unique
         if users.find_one({"username": username}):
-            raise Exception("User with this ID already exists.")
+            raise Exception("User already exists.")
 
         #Hash the password before storing
         user_dict = {
@@ -38,7 +39,7 @@ def addUser(client, username, password):
         return False
 
 
-# Helper function to query a user by username and userId
+# Helper function to query a user by username
 def __queryUser(client, username):
     # Query and return a user from the database
     try:
@@ -50,21 +51,19 @@ def __queryUser(client, username):
     except Exception as username:
         print(f"Error quering user: {username}")
 
-
-# Function to log in a user
 def login(client, username, password):
-    # Authenticate a user and return login status
+    if not all([username, password]):
+        return {'message': 'Missing required fields', 'success': False}, 400
+
     try:
         users_dict = get_users(client)
-        users = users_dict.find_one({"username": username})
-        passw = users_dict.find_one({"password": password})
-        if not users and not passw:
-            return False
-        return True
-    except Exception as username:
-        print(f"Error logging in: {username}")
-        return False
-
+        user = users_dict.find_one({"username": username})
+        if user and check_password_hash(user['password'], password):
+            return {'message': 'Login successful', 'success': True}, 200
+        return {'message': 'Invalid username or password', 'success': False}, 401
+    except Exception as e:
+        return {'message': str(e), 'success': False}, 500
+       
 # Function to add a user to a project
 def joinProject(client, username, projectId):
     # Add a user to a specified project

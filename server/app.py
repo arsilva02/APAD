@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 from flask_cors import CORS
 from projectsDatabase import createProject, queryProject, createProject, addUser, updateUsage, checkOutHW, checkInHW # Import the createProject function
 from usersDatabase import addUser, __queryUser, login, joinProject, getUserProjectsList
@@ -14,65 +14,130 @@ MONGO_URI = "mongodb+srv://apadTeam:APADisawesome%21@cluster.ig2qffr.mongodb.net
 client = MongoClient(MONGO_URI)
 db = client['db']
 
-@app.route('/main') #Check with team what to do with this
+@app.route('/main')
 def mainPage():
-    return jsonify({})
+    return jsonify({'message': 'Backend is running', 'success': True}), 200
 
-@app.route('/get_user_projects_list', methods=['POST'])
-def get_user_projects_list():
-    return jsonify({})
-
-@app.route('/get_all_hw_names', methods=['POST'])
-def get_all_hw_names():
-    return jsonify({})
-
-@app.route('/get_hw_info', methods=['POST'])
-def get_hw_info():
-    return jsonify({})
-
-@app.route('/check_out', methods=['POST'])
-def check_out():
-    return jsonify({})
-
-@app.route('/check_in', methods=['POST'])
-def check_in():
-    return jsonify({})
-
-@app.route('/create_hardware_set', methods=['POST'])
-def create_hardware_set():
-    return jsonify({})
-
-@app.route('/inventory', methods=['GET']) #To check with the team if needed
-def check_inventory():
-    return jsonify({})
-
-@app.route('/add_user', methods=['POST']) #Working
+@app.route('/add_user', methods=['POST']) 
 def add_user():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
 
-    if db['users'].find_one({'username': username}):
-        return jsonify({'message': 'User already exists!', 'success': False}), 400
-
+    if not all([username, password]):
+        return jsonify({'message': 'Missing required fields', 'success': False}), 400
     hashed_password = generate_password_hash(password)
-    db['users'].insert_one({'username': username, 'password': hashed_password})
-    return jsonify({'message': 'User created successfully', 'success': True}), 201
 
-@app.route('/login', methods=['POST']) #Working
-def login():
+    try:
+        success = addUser(client, username, hashed_password)
+        if success:
+            return jsonify({'message': 'User created successfully', 'success': True}), 201
+        else:
+            return jsonify({'message': 'User already exists!', 'success': False}), 409
+    except Exception as e:
+        return jsonify({'message': str(e), 'success': False}), 500
+
+@app.route('/login', methods=['POST'])
+def login_route():
     data = request.get_json()
     username = data.get('username')
-    password = data.get('password')
+    password = data.get('password')   
 
-    user = db['users'].find_one({'username': username})
+    response, status_code = login(client, username, password)
+    return jsonify(response), status_code
 
-    if user and check_password_hash(user['password'], password):
-        return jsonify({'message': 'Login successful!', 'success': True}), 200
-    else:
-        return jsonify({'message': 'Invalid username or password.', 'success': False}), 401
+@app.route('/create_hardware_set', methods=['POST'])
+def create_hardware_set():
+    data = request.get_json()
+    hw_name = data.get('hwName')
+    init_capacity = data.get('initCapacity')
 
-@app.route('/create_project', methods=['POST']) #Working, still check
+    if not all([hw_name, init_capacity]):
+        return jsonify({'message': 'Missing required fields', 'success': False}), 400
+
+    try:
+        # Check if the hardware set already exists
+        existing_hw_set = queryHardwareSet(client, hw_name)
+        if existing_hw_set:
+            return jsonify({'message': 'Hardware set already exists', 'success': False}), 409
+
+        # Create the new hardware set
+        createHardwareSet(client, hw_name, init_capacity)
+        return jsonify({'message': 'Hardware set created successfully', 'success': True}), 201
+
+    except Exception as e:
+        return jsonify({'message': str(e), 'success': False}), 500
+    
+@app.route('/get_all_hw_names', methods=['POST'])
+def get_all_hw_names():
+    try:
+        hw_names = getAllHwNames(client)
+        return jsonify({'hw_names': hw_names, 'success': True}), 200
+    except Exception as e:
+        return jsonify({'message': str(e), 'success': False}), 500
+
+@app.route('/get_hw_info', methods=['POST'])
+def get_hw_info():
+    data = request.get_json()
+    hw_name = data.get('hwName')
+
+    if not hw_name:
+        return jsonify({'message': 'Missing hwName', 'success': False}), 400
+
+    try:
+        hw_info = queryHardwareSet(client, hw_name)
+        if hw_info:
+            hw_info['_id'] = str(hw_info['_id'])  # Convert ObjectId to string for JSON serialization
+            return jsonify({'hw_info': hw_info, 'success': True}), 200
+        else:
+            return jsonify({'message': 'Hardware set not found', 'success': False}), 404
+
+    except Exception as e:
+        return jsonify({'message': str(e), 'success': False}), 500
+
+@app.route('/check_out', methods=['POST'])
+def check_out():
+    data = request.get_json()
+    project_id = data.get('projectId')
+    hw_name = data.get('hwName')
+    qty = data.get('quantity')
+    user_id = data.get('userId')
+
+    if not all([project_id, hw_name, qty, user_id]):
+        return jsonify({'message': 'Missing required fields', 'success': False}), 400
+
+    try:
+        success = checkOutHW(client, project_id, hw_name, qty, user_id)
+        if success:
+            return jsonify({'message': 'Hardware checked out successfully', 'success': True}), 200
+        else:
+            return jsonify({'message': 'Unable to check out hardware', 'success': False}), 500
+
+    except Exception as e:
+        return jsonify({'message': str(e), 'success': False}), 500
+
+@app.route('/check_in', methods=['POST'])
+def check_in():
+    return jsonify({})
+
+@app.route('/inventory', methods=['GET'])
+def check_inventory():
+    return jsonify({})
+
+@app.route('/get_user_projects_list', methods=['POST']) 
+def get_user_projects_list():
+    data = request.json
+    username = data.get("username")
+    if not username:
+        return jsonify({"error": "Username is required"}), 400
+
+    projects = getUserProjectsList(client, username)
+    if projects is False:
+        return jsonify({"error": "Unable to retrieve user projects"}), 500
+
+    return jsonify({"projects": projects})
+
+@app.route('/create_project', methods=['POST'])
 def create_project():
     data = request.get_json()
     project_name = data.get('project_name')
@@ -89,7 +154,7 @@ def create_project():
     except Exception as e:
         return jsonify({'message': str(e), 'success': False}), 500
 
-@app.route('/get_project_info', methods=['POST']) #Working, still check
+@app.route('/get_project_info', methods=['POST'])
 def get_project_info():
     data = request.get_json()
     project_id = data.get('project_id')
@@ -109,17 +174,17 @@ def get_project_info():
     except Exception as e:
         return jsonify({'message': str(e), 'success': False}), 500
 
-@app.route('/join_project', methods=['POST']) #Check on this
+@app.route('/join_project', methods=['POST'])
 def join_project():
     data = request.get_json()
     project_id = data.get('project_id')  # Ensure project_id is included in the request
-    user_id = data.get('username')
+    username = data.get('username')
 
-    if not all([project_id, user_id]):
+    if not all([project_id, username]):
         return jsonify({'message': 'Missing project_id or user_id', 'success': False}), 400
 
     try:
-        success = addUser(client, project_id, user_id)
+        success = addUser(client, project_id, username)
         if success:
             return jsonify({'message': 'User added to project successfully', 'success': True}), 200
         else:
