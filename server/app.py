@@ -210,7 +210,7 @@ def join_project():
         if success:
             return jsonify({'message': 'User added to project successfully', 'success': True}), 200
         else:
-            return jsonify({'message': 'Failed to add user to project', 'success': False}), 409
+            return jsonify({'message': 'User already present', 'success': False}), 409
     except Exception as e:
         return jsonify({'message': str(e), 'success': False}), 500
 
