@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
 from flask_cors import CORS
-from projectsDatabase import createProject, queryProject, createProject, addUser, updateUsage, checkOutHW, checkInHW # Import the createProject function
+from projectsDatabase import createProject, queryProject, createProject, joinUser, updateUsage, checkOutHW, checkInHW # Import the createProject function
 from usersDatabase import addUser, __queryUser, login, joinProject, getUserProjectsList
 from hardwareDatabase import createHardwareSet, queryHardwareSet, updateAvailability, requestSpace, getAllHwNames
 
@@ -195,24 +195,25 @@ def get_project_info():
     except Exception as e:
         return jsonify({'message': str(e), 'success': False}), 500
 
+
 @app.route('/join_project', methods=['POST'])
 def join_project():
     data = request.get_json()
-    project_id = data.get('project_id')  # Ensure project_id is included in the request
     username = data.get('username')
+    project_id = data.get('project_id')
 
-    if not all([project_id, username]):
-        return jsonify({'message': 'Missing project_id or user_id', 'success': False}), 400
+    if not all([username, project_id]):
+        return jsonify({'message': 'Missing required fields', 'success': False}), 400
 
     try:
-        success = addUser(client, project_id, username)
+        success = joinUser(client, project_id, username)
         if success:
             return jsonify({'message': 'User added to project successfully', 'success': True}), 200
         else:
-            return jsonify({'message': 'Failed to add user to project', 'success': False}), 404
-
+            return jsonify({'message': 'Failed to add user to project', 'success': False}), 409
     except Exception as e:
         return jsonify({'message': str(e), 'success': False}), 500
+
         
 if __name__ == '__main__':
     app.run(debug=True)
