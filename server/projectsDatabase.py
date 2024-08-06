@@ -52,6 +52,8 @@ def createProject(client, projectName, projectId, description):
     
     projects.insert_one(projectToAdd) #insert into db
 
+    return True
+
 # Function to add a user to a project
 def addUser(client, projectId, userId):
     # Create a new project in the database
