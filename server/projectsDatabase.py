@@ -35,6 +35,13 @@ def createProject(client, projectName, projectId, description):
     
     #empty users list
     users = []
+
+
+    #Check if project exists
+    projectCheck = queryProject(client,projectId)
+    
+    if projectCheck:
+        return False #return false if ID already exists in system.
     
     #create doc
     projectToAdd = {'projectName':projectName,
