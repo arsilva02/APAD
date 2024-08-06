@@ -152,7 +152,7 @@ def create_project():
         if check:
             return jsonify({'message': 'Project created successfully', 'success': True}), 201
         
-        return jsonify({'message': 'Project cannot be created successfully: Project ID already exists', 'success': True}), 201
+        return jsonify({'message': 'Project cannot be created successfully: Project ID already exists', 'success': False}), 201
 
 
     except Exception as e:
