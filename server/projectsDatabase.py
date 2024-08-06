@@ -81,7 +81,6 @@ def updateUsage(client, projectId, hwSetName):
 # Function to check out hardware for a project
 def checkOutHW(client, projectId, hwSetName, qty, userId):
     # Check out hardware for the specified project and update availability
-    db = client.db  # grab client db
 
     # Find the project and the hardware set
     project = queryProject(client,projectId)
@@ -99,5 +98,27 @@ def checkOutHW(client, projectId, hwSetName, qty, userId):
 # Function to check in hardware for a project
 def checkInHW(client, projectId, hwSetName, qty, userId):
     # Check in hardware for the specified project and update availability
-    pass
+    # Find the project and the hardware set
+    project = queryProject(client,projectId)
+    hw_set = hardwareDatabase.queryHardwareSet(client,projectId)
+
+
+    # Check if project and hardware exists
+    if project and hw_set:
+            
+        cap = hw_set['capacity'] #grab hw_set capacity
+        availability = hw_set['availability'] #grab availability
+
+        if (availability + qty) > cap: #if the availability and quantity is more than the capacity
+            return False #return error
+    
+        return hardwareDatabase.updateAvailability(client,hwSetName,qty+availability) #update availability, adding quantity
+    
+    #returns true if succeeds
+    #returns false if not
+    else:
+        return False #returns false if project or hw set does not exist
+
+
+    
 
