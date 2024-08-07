@@ -1,33 +1,28 @@
-
-import './App.css'
-
-import { HashRouter, Route, Routes } from 'react-router-dom';
-import Home from './pages/home';
-import Project from './pages/Project';
-import NewUser from './pages/newUser';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Signup from './pages/signUp';
 import Login from './pages/login';
+import Project from './pages/project';
 import NewProject from './pages/newProject';
-import Resource from './pages/resource';
+import Hardware from './pages/hardware';
 
-function App() {
+import './App.css';
 
-
+const App = () => {
   return (
-    <>
-      
-      <HashRouter>
-        <Routes>
-          <Route path='/' element={ <Home /> } />
-          <Route path='/Project' element={ <Project /> } />
-          <Route path='/newUser' element={ <NewUser /> } />
-          <Route path='/login' element={ <Login />}/>
-          <Route path='/newProject' element={ <NewProject /> }/>
-          <Route path='/recource' element = { <Resource /> } />
+    <div className="App">
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/newProject" element={<Project />} />
+        <Route path="/project" element={<NewProject />} />
+        <Route path="/hardware" element={<Hardware />} />
+      </Routes>
+    </div>
+  );
+};
 
-        </Routes>
-      </HashRouter>
-    </>
-  )
-}
+export default App;
 
-export default App

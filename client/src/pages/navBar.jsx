@@ -1,9 +1,7 @@
 export default function Navbar(){
-    return (
-    <nav className="nav">
-       
-        User Management
-       
-    </nav>
+    return(
+        <nav className="nav">
+            User Management
+        </nav>
     )
 }

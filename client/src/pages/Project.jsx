@@ -1,17 +1,30 @@
-import { Link } from 'react-router-dom';
-import Navbar from './navBar';
+import React, { useState } from "react";
+import Navbar from "./navBar";
+import { Link } from "react-router-dom";
 
-export default function Project (){
-    return (
-        <>
-        <Navbar />
-        <div className='homeButton'>
-        <Link to={'/'}><button className='routerButton'>Home</button></Link>
+function Project() {
+  return (
+    <>
+      <Navbar />
+      <div className="homeTop">
+        <Link to={"/"}>
+          <button className="routerButton">Home</button>
+        </Link>
+      </div>
+      <p className='otherParagraph'>Give a <i>Project ID</i> to join a project and request Hardware</p>
+      <div style={{ textAlign: "center", padding: "10px" }}>
+        <div style={{ marginTop: "0px" }}>
+          <div className='formGroup'>
+            <label htmlFor="projectid" className='labelSignUp'>Project ID: </label>
+            <input type="text" className='textBox' id="projectid" placeholder="Enter Project ID" />
+          </div>
+          <div style={{ marginTop: "20px" }}>
+            <button onClick={Project} className='ButtonSign buttonPlace'>Project Login</button>
+          </div>
         </div>
-        
-        <div>This is the Project Login page</div>
-        
-        
-        </>
-    )
+      </div>
+    </>
+  );
 }
+
+export default Project;

@@ -1,0 +1,83 @@
+body {
+    color: black;
+  }
+  
+  .nav {
+    background-color: #bf5700;
+    color: #ffffff;
+    text-align: center;
+    padding-top: 25px;
+    padding-bottom: 25px;
+  }
+  
+  
+  .homeTop {
+    padding-top: 40px;
+    padding-left: 1250px;
+  }
+  
+  .textBox1 {
+    padding: 10px;
+    background-color: #ffffff;
+    border-color: #bf5700;
+    border-width: 2px;
+    border-radius: 15px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .alignText {
+    padding-left: 600px;
+  }
+  
+  .ButtonSign {
+    padding: 10px;
+    background-color: #bf5700;
+    color: #ffffff;
+    border-radius: 10px;
+    border: none;
+    margin-top: 10px;
+    margin-left: 30px;
+  }
+  
+  
+  .ButtonHardware {
+    padding: 10px;
+    background-color: #bf5700;
+    color: #ffffff;
+    border-radius: 10px;
+    border: none;
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  
+  .resource {
+    margin-top: 80px;
+    
+  }
+  
+  .resourceTable {
+    width: 100%;
+    border-collapse: collapse;
+    
+  }
+  
+  .resourceTable th, .resourceTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .resourceTable th {
+    background-color: #f2f2f2;
+    color: #ffffff;
+    background-color: #bf5700;
+  }
+  
+  .resourceActions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  

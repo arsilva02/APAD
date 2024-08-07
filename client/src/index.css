@@ -1,72 +1,91 @@
-body{
-  color:black;
+body {
+  color: black;
 }
 
-.nav{
-  background-color: #bf5700 ;
+.nav {
+  background-color: #bf5700;
   color: #ffffff;
   text-align: center;
   padding-top: 25px;
   padding-bottom: 25px;
-  
 }
 
-.routerElements{
-  padding-top: 250px;
-  padding-left: 300px;
-}
-
-.routerButton{
-
-  padding: 20px 20px 20px 20px;
-  background-color: #bf5700 ;
-  color: #ffffff;
-  border-radius: 10px;
-  border: none;
-}
-
-.linkSpace{
-  padding-left: 25px;
-  padding-right: 25px; 
-}
-
-.homeButton{
-  padding-left: 1290px;
+.routerElements {
+  padding: auto;
   padding-top: 50px;
 }
 
-.textBox{
-  padding: 10px 10px 10px 10px;
-  background-color: #ffffff ;
-  border-color: #bf5700;
-  border-width: 2px;
-  border-radius: 15px;
-}
-
-.signUp{
-  padding-top: 70px;
-  padding-left: 550px;
-}
-
-.labelSignUp{
-  padding-right: 22px;
-}
-
-.labelPass{
-  padding-right: 13px;
-}
-
-.ButtonSign{
-  padding: 10px 10px 10px 10px;
-  background-color: #bf5700 ;
+.routerButton {
+  padding: 20px;
+  background-color: #bf5700;
   color: #ffffff;
   border-radius: 10px;
   border: none;
-  margin-top: 40px;
-  margin-left: 70px;
 }
 
-.pageText{
+.homeParagraph {
+  padding-top: 190px;
+}
+
+.otherParagraph {
+  padding-top: 30px;
+}
+
+.linkSpace {
+  padding-left: 0px;
+  padding-left: 25px;
+}
+
+.homeButton {
+  padding: 20px;
+  background-color: #bf5700;
+  color: #ffffff;
+  border-radius: 10px;
+  border: none;
+}
+
+.homeTop {
+  padding-top: 40px;
+  padding-left: 1250px;
+}
+
+.textBox {
+  padding: 10px;
+  background-color: #ffffff;
+  border-color: #bf5700;
+  border-width: 2px;
+  border-radius: 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.alignText {
+  padding-left: 600px;
+}
+
+.alignIcon {
+  padding-left: 250px;
+}
+
+.labelSignUp {
+  padding: auto;
+}
+
+.labelPass {
+  padding-right: 13px;
+}
+
+.ButtonSign {
+  padding: 10px 20px;
+  background-color: #bf5700;
+  color: #ffffff;
+  border-radius: 10px;
+  border: none;
+  margin-top: 10px;
+  margin-left: 30px;
+}
+
+.pageText {
   padding-top: 70px;
   text-align: center;
 }
@@ -75,7 +94,6 @@ body{
   position: relative;
   display: inline-block;
   cursor: pointer;
-  margin-left: 8px;
 }
 
 .i-tooltip .i-tooltiptext {
@@ -88,9 +106,9 @@ body{
   padding: 5px;
   position: absolute;
   z-index: 1;
-  bottom: 0%; /* Position above the icon */
+  bottom: 125%; /* Position above the icon */
   left: 50%;
-  margin-left: 10px; /* Center the tooltip */
+  margin-left: -110px; /* Center the tooltip */
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -100,36 +118,30 @@ body{
   opacity: 1;
 }
 
-
-.formDataResource{
-  padding-top: 15px;
-  padding-left: 0px;
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-left: 600px;
 }
 
-.resource{
-  padding-top: 20px;
-  padding-left: 500px;
+.textBox {
+  width: 100%;
+  max-width: 300px;
 }
 
-.ButtonHardware{
-  padding: 10px 10px 10px 10px;
-  background-color: #bf5700 ;
+.ButtonSign {
+  padding: 10px 20px;
+  background-color: #bf5700;
   color: #ffffff;
   border-radius: 10px;
   border: none;
-  margin-top: 40px;
-  margin-left: 40px;
+  margin-top: 20px;
+  margin-left: 600px;
 }
 
-.resourceHeading,
-.resourceRow {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.formDataResource {
-  margin-right: 0px;
-  font-weight: bold;
+.buttonPlace{
+  margin-left: 270px;
+  padding:15px;
 }
