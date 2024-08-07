@@ -141,10 +141,11 @@ def check_in():
 def check_inventory():
     return jsonify({})
 
-@app.route('/get_user_projects_list', methods=['POST']) 
+@app.route('/get_user_projects_list', methods=['POST'])
 def get_user_projects_list():
-    data = request.json
+    data = request.get_json()
     username = data.get("username")
+
     if not username:
         return jsonify({"error": "Username is required"}), 400
 
@@ -153,6 +154,7 @@ def get_user_projects_list():
         return jsonify({"error": "Unable to retrieve user projects"}), 500
 
     return jsonify({"projects": projects})
+
 
 @app.route('/create_project', methods=['POST'])
 def create_project():
