@@ -29,7 +29,7 @@ const LoginPage = () => {
         const response = await axios.post('http://localhost:5000/login', { username, password });
         setMessage(response.data.message);
         if (response.data.success) {
-          window.location.href = '/projects';
+          window.location.href = '/projectList';
         }
       } catch (error) {
         if (error.response) {

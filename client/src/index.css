@@ -145,3 +145,37 @@ body {
   margin-left: 270px;
   padding:15px;
 }
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.project-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 10px;
+  width: 60%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.project-card h3 {
+  color: #333;
+}
+
+.hw-usage p {
+  margin: 5px 0;
+}
+
+.ProjectButton{
+  width: 170px;
+  padding: 10px 20px;
+  background-color: #bf5700;
+  color: #ffffff;
+  border-radius: 10px;
+  border: none;
+}

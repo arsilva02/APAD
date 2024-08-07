@@ -153,6 +153,12 @@ def get_user_projects_list():
     if projects is False:
         return jsonify({"error": "Unable to retrieve user projects"}), 500
 
+    # Get hardware usage for each project
+    for project in projects:
+        project_id = project.get("project_id")
+        hw_sets = queryHardwareSet(client, project_id)  # Modify this to get hardware sets for the project
+        project["hw_sets"] = hw_sets
+
     return jsonify({"projects": projects})
 
 

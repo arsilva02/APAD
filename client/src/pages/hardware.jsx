@@ -1,13 +1,34 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import NavbarResource from './navBarHardware';
+import axios from 'axios';
 import './resource.css'; // Import the new CSS file
 
 const Resource = () => {
-  const [resources, setResources] = useState({
-    HWSet1: { capacity: 10, available: 3, request: 0 },
-    HWSet2: { capacity: 8, available: 6, request: 0 }
-  });
+  const location = useLocation();
+  const { project } = location.state || {};
+  const [resources, setResources] = useState({});
+
+  useEffect(() => {
+    if (project) {
+      const fetchResources = async () => {
+        try {
+          const hwData = {};
+          for (const hw of project.hw_sets) {
+            hwData[hw.hw_name] = {
+              capacity: hw.capacity,
+              available: hw.available,
+              request: 0
+            };
+          }
+          setResources(hwData);
+        } catch (error) {
+          console.error('Error fetching hardware sets:', error);
+        }
+      };
+      fetchResources();
+    }
+  }, [project]);
 
   const handleInputChange = (e, hwSet) => {
     const { value } = e.target;
@@ -20,42 +41,70 @@ const Resource = () => {
     });
   };
 
-  const handleCheckIn = (hwSet) => {
-    setResources((prevResources) => {
-      const newAvailable = prevResources[hwSet].available + prevResources[hwSet].request;
-      if (newAvailable <= prevResources[hwSet].capacity) {
-        return {
-          ...prevResources,
-          [hwSet]: {
-            ...prevResources[hwSet],
-            available: newAvailable,
-            request: 0
+  const handleCheckIn = async (hwSet) => {
+    try {
+      const response = await axios.post('http://localhost:5000/check_in', {
+        projectId: project.project_id,
+        hwName: hwSet,
+        quantity: resources[hwSet].request,
+        userId: 'default_user' // Replace with actual user ID
+      });
+      if (response.data.success) {
+        setResources((prevResources) => {
+          const newAvailable = prevResources[hwSet].available + prevResources[hwSet].request;
+          if (newAvailable <= prevResources[hwSet].capacity) {
+            return {
+              ...prevResources,
+              [hwSet]: {
+                ...prevResources[hwSet],
+                available: newAvailable,
+                request: 0
+              }
+            };
+          } else {
+            alert(`${hwSet} availability cannot exceed its capacity.`);
+            return prevResources;
           }
-        };
+        });
       } else {
-        alert(`${hwSet} availability cannot exceed its capacity.`);
-        return prevResources;
+        alert(response.data.message);
       }
-    });
+    } catch (error) {
+      console.error('Error checking in hardware:', error);
+    }
   };
 
-  const handleCheckOut = (hwSet) => {
-    setResources((prevResources) => {
-      const newAvailable = prevResources[hwSet].available - prevResources[hwSet].request;
-      if (newAvailable >= 0) {
-        return {
-          ...prevResources,
-          [hwSet]: {
-            ...prevResources[hwSet],
-            available: newAvailable,
-            request: 0
+  const handleCheckOut = async (hwSet) => {
+    try {
+      const response = await axios.post('http://localhost:5000/check_out', {
+        projectId: project.project_id,
+        hwName: hwSet,
+        quantity: resources[hwSet].request,
+        userId: 'default_user' // Replace with actual user ID
+      });
+      if (response.data.success) {
+        setResources((prevResources) => {
+          const newAvailable = prevResources[hwSet].available - prevResources[hwSet].request;
+          if (newAvailable >= 0) {
+            return {
+              ...prevResources,
+              [hwSet]: {
+                ...prevResources[hwSet],
+                available: newAvailable,
+                request: 0
+              }
+            };
+          } else {
+            alert(`${hwSet} availability cannot be negative.`);
+            return prevResources;
           }
-        };
+        });
       } else {
-        alert(`${hwSet} availability cannot be negative.`);
-        return prevResources;
+        alert(response.data.message);
       }
-    });
+    } catch (error) {
+      console.error('Error checking out hardware:', error);
+    }
   };
 
   return (
@@ -74,7 +123,7 @@ const Resource = () => {
             <tr>
               <th>Hardware Set</th>
               <th>Capacity</th>
-              <th>Availablity</th>
+              <th>Availability</th>
               <th>Request/Return</th>
               <th>Actions</th>
             </tr>

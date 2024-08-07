@@ -7,8 +7,6 @@ const NewProject = () => {
   const [projectId, setProjectId] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [message, setMessage] = useState("");
 
   const handleCreateProject = async (e) => {
@@ -16,9 +14,8 @@ const NewProject = () => {
     try {
       const response = await axios.post('http://localhost:5000/create_project', {
         project_name: name,
-        description: description,
-        start_date: startDate,
-        end_date: endDate
+        project_id: projectId,
+        description: description
       });
       setMessage(response.data.message);
     } catch (error) {
@@ -76,30 +73,6 @@ const NewProject = () => {
                   style={{ marginLeft: "10px" }}
                   className='textBox'
                   placeholder="Enter Description"
-                />
-              </div>
-            </div>
-            <div style={{ marginTop: "10px" }}>
-              <label className='labelSignUp'>Start Date: </label>
-              <div className='alignText'>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  style={{ marginLeft: "10px" }}
-                  className='textBox'
-                />
-              </div>
-            </div>
-            <div style={{ marginTop: "10px" }}>
-              <label className='labelSignUp'>End Date: </label>
-              <div className='alignText'>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  style={{ marginLeft: "10px" }}
-                  className='textBox'
                 />
               </div>
             </div>
