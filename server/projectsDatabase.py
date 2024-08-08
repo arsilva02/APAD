@@ -93,7 +93,7 @@ def updateUsage(client, projectId, hwSetName):
         
 
 # Function to check out hardware for a project
-def checkOutHW(client, projectId, hwSetName, qty, userId):
+def checkOutHW(client, projectId, hwSetName, qty, username):
     # Check out hardware for the specified project and update availability
 
     # Find the project and the hardware set
@@ -110,7 +110,7 @@ def checkOutHW(client, projectId, hwSetName, qty, userId):
         return False #returns false if project or hw set does not exist
 
 # Function to check in hardware for a project
-def checkInHW(client, projectId, hwSetName, qty, userId):
+def checkInHW(client, projectId, hwSetName, qty, username):
     # Check in hardware for the specified project and update availability
     # Find the project and the hardware set
     project = queryProject(client,projectId)
