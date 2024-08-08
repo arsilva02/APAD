@@ -25,7 +25,7 @@ def queryProject(client, projectId):
     return queried # returns query
 
 # Function to create a new project
-def createProject(client, projectName, projectId, description):
+def createProject(client, projectName, projectId, description, username):
     # Create a new project in the database
     db = client.db #grab client db
     projects = db.projects #grab projects sets from database
@@ -34,7 +34,7 @@ def createProject(client, projectName, projectId, description):
     hwSets = {}
     
     #empty users list
-    users = []
+    users = [username]
 
 
     #Check if project exists
@@ -54,7 +54,7 @@ def createProject(client, projectName, projectId, description):
 
     return True
 
-def joinUser(client, projectId, userId):
+def joinUser(client, projectId, username):
     db = client.db  # grab client db
     projects = db.projects  # grab projects sets from database
     
@@ -62,11 +62,11 @@ def joinUser(client, projectId, userId):
 
     if project:
         # Check if the user is already in the project
-        if userId in project['users']:
+        if username in project['users']:
             return False  # user already in project
 
         # Add user to the project
-        projects.update_one({'projectId': projectId}, {'$push': {'users': userId}})
+        projects.update_one({'projectId': projectId}, {'$push': {'users': username}})
         return True  # show that it succeeds
 
     return False  # show fail
