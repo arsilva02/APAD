@@ -2,6 +2,7 @@
 from pymongo import MongoClient
 
 import hardwareDatabase
+import usersDatabase
 
 '''
 Structure of Project entry:
@@ -34,7 +35,7 @@ def createProject(client, projectName, projectId, description, username):
     hwSets = {}
     
     #empty users list
-    users = [username]
+    users = []
 
 
     #Check if project exists
@@ -51,8 +52,10 @@ def createProject(client, projectName, projectId, description, username):
                'users':users}
     
     projects.insert_one(projectToAdd) #insert into db
+    
+    result = joinUser(client,projectId,username) #get the result of the user
 
-    return True
+    return result
 
 def joinUser(client, projectId, username):
     db = client.db  # grab client db
@@ -67,7 +70,9 @@ def joinUser(client, projectId, username):
 
         # Add user to the project
         projects.update_one({'projectId': projectId}, {'$push': {'users': username}})
-        return True  # show that it succeeds
+        
+        result = usersDatabase.joinProject(client,username,projectId) #get result by adding to users side
+        return result  # show that it succeeds
 
     return False  # show fail
 
