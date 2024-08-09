@@ -1,66 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from './navBar';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import Navbar from "./navBar";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const ProjectsList = () => {
   const [projects, setProjects] = useState([]);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const username = localStorage.getItem("username"); // Get the username from localStorage
 
   useEffect(() => {
+    console.log("Fetching projects for user:", username); // Debugging log
     const fetchProjects = async () => {
       try {
-        const response = await axios.post('http://localhost:5000/get_user_projects_list', { username: 'your_username' });
+        const response = await axios.post(
+          "http://localhost:5000/get_user_projects_list",
+          { username }
+        );
         setProjects(response.data.projects);
       } catch (error) {
-        if (error.response) {
-          setMessage(error.response.data.message);
-        } else {
-          console.error('There was an error!', error);
-        }
+        console.error("There was an error!", error);
+        setMessage("Failed to load projects. Please try again.");
       }
     };
 
     fetchProjects();
-  }, []);
+  }, [username]);
 
   const handleSelectProject = (project) => {
-    navigate('/hardware', { state: { project } });
+    navigate("/hardware", { state: { project } });
   };
 
   return (
     <>
       <Navbar />
-      <div className='homeTop'>
-        <Link to={'/'}><button className='ProjectButton'>Home</button></Link>
-      </div>
-      <div className='homeTop'>
-        <Link to={'/project'}><button className='ProjectButton'>Create Project</button></Link>
-      </div>
-      <div className='homeTop'>
-        <Link to={'/newProject'}><button className='ProjectButton'>Login with Project ID</button></Link>
-      </div>
-      <p className='otherParagraph'>Select a project to view or join and manage hardware</p>
-      <div className='project-list'>
-        {projects.map((project) => (
-          <div key={project.project_id} className='project-card'>
-            <h3>{project.project_name}</h3>
-            <p>{project.description}</p>
-            <div className='hw-usage'>
-              {project.hw_sets.map((hw) => (
-                <div key={hw.hw_name}>
-                  <p>{hw.hw_name}: {hw.available}/{hw.capacity}</p>
-                </div>
-              ))}
-            </div>
-            <button className='ButtonSign' onClick={() => handleSelectProject(project)}>
-              Select
-            </button>
+      <div className="dashboard-container">
+        <div>
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
+          <h2>Welcome, {username}</h2>
+          <p>Here are your current projects:</p>
+          <div className="dashboard-actions">
+            <Link to={"/project"}>
+              <button className="ProjectButton">Create New Project</button>
+            </Link>{" "}
+            &nbsp;&nbsp;&nbsp;
+            <Link to={"/newProject"}>
+              <button className="ProjectButton">Login with Project ID</button>
+            </Link>
           </div>
-        ))}
+        </div>
+        {message && <p className="error-message">{message}</p>}
       </div>
-      {message && <p>{message}</p>}
     </>
   );
 };

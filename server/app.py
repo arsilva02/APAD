@@ -2,11 +2,11 @@ from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
 from flask_cors import CORS
-from projectsDatabase import createProject, queryProject, createProject, joinUser, updateUsage, checkOutHW, checkInHW # Import the createProject function
+from projectsDatabase import createProject, queryProject, createProject, joinUser, updateUsage, checkOutHW, checkInHW
 from usersDatabase import addUser, __queryUser, login, joinProject, getUserProjectsList
 from hardwareDatabase import createHardwareSet, queryHardwareSet, updateAvailability, requestSpace, getAllHwNames
 
-static_folder_path = r"C:\Users\s1003\ProjectAPAD\test\client\flask-frontend\dist"
+static_folder_path = r"C:\Users\ravi19raman\apadProject\APAD\client\dist"
 app = Flask(__name__, static_folder=static_folder_path)
 CORS(app)
 
@@ -18,7 +18,7 @@ db = client['db']
 def mainPage():
     return jsonify({'message': 'Backend is running', 'success': True}), 200
 
-@app.route('/add_user', methods=['POST']) 
+@app.route('/add_user', methods=['POST'])
 def add_user():
     data = request.get_json()
     username = data.get('username')
@@ -41,10 +41,13 @@ def add_user():
 def login_route():
     data = request.get_json()
     username = data.get('username')
-    password = data.get('password')   
+    password = data.get('password')
 
-    response, status_code = login(client, username, password)
-    return jsonify(response), status_code
+    try:
+        response, status_code = login(client, username, password)
+        return jsonify(response), status_code
+    except Exception as e:
+        return jsonify({'message': str(e), 'success': False}), 500
 
 @app.route('/create_hardware_set', methods=['POST'])
 def create_hardware_set():
@@ -56,18 +59,16 @@ def create_hardware_set():
         return jsonify({'message': 'Missing required fields', 'success': False}), 400
 
     try:
-        # Check if the hardware set already exists
         existing_hw_set = queryHardwareSet(client, hw_name)
         if existing_hw_set:
             return jsonify({'message': 'Hardware set already exists', 'success': False}), 409
 
-        # Create the new hardware set
         createHardwareSet(client, hw_name, init_capacity)
         return jsonify({'message': 'Hardware set created successfully', 'success': True}), 201
 
     except Exception as e:
         return jsonify({'message': str(e), 'success': False}), 500
-    
+
 @app.route('/get_all_hw_names', methods=['POST'])
 def get_all_hw_names():
     try:
@@ -101,12 +102,13 @@ def check_out():
     project_id = data.get('projectId')
     hw_name = data.get('hwName')
     qty = data.get('quantity')
+    user_id = data.get('userId')
 
-    if not all([project_id, hw_name, qty]):
+    if not all([project_id, hw_name, qty, user_id]):
         return jsonify({'message': 'Missing required fields', 'success': False}), 400
 
     try:
-        success = checkOutHW(client, project_id, hw_name, qty)
+        success = checkOutHW(client, project_id, hw_name, qty, user_id)
         if success:
             return jsonify({'message': 'Hardware checked out successfully', 'success': True}), 200
         else:
@@ -121,12 +123,13 @@ def check_in():
     project_id = data.get('projectId')
     hw_name = data.get('hwName')
     qty = data.get('quantity')
+    user_id = data.get('userId')
 
-    if not all([project_id, hw_name, qty]):
+    if not all([project_id, hw_name, qty, user_id]):
         return jsonify({'message': 'Missing required fields', 'success': False}), 400
 
     try:
-        success = checkInHW(client, project_id, hw_name, qty)
+        success = checkInHW(client, project_id, hw_name, qty, user_id)
         if success:
             return jsonify({'message': 'Hardware checked in successfully', 'success': True}), 200
         else:
@@ -149,15 +152,21 @@ def get_user_projects_list():
 
     try:
         projects = getUserProjectsList(client, username)
-        if projects is False:
+        if not projects:
             return jsonify({"error": "Unable to retrieve user projects"}), 500
-        
-        # If projects are a list of strings, do not try to access as dictionaries
-        return jsonify({"projects": [{"project_id": project} for project in projects], "success": True}), 200
 
+        # Get hardware usage for each project
+        for project in projects:
+            if isinstance(project, dict):  # Ensure project is a dictionary
+                project_id = project.get("project_id")
+                if project_id:
+                    hw_sets = queryHardwareSet(client, project_id)
+                    if hw_sets:
+                        project["hw_sets"] = hw_sets
+
+        return jsonify({"projects": projects})
     except Exception as e:
-        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/create_project', methods=['POST'])
 def create_project():
@@ -165,19 +174,17 @@ def create_project():
     project_name = data.get('project_name')
     project_id = data.get('project_id')
     description = data.get('description')
-    username = data.get('username')
+    username = data.get('username')  # Get the username of the project creator
 
     if not all([project_name, project_id, description, username]):
         return jsonify({'message': 'Missing required fields', 'success': False}), 400
 
     try:
-        check = createProject(client, project_name, project_id, description, username) #Check is project is created
+        check = createProject(client, project_name, project_id, description, username)  # Check if project is created
         if check:
             return jsonify({'message': 'Project created successfully', 'success': True}), 201
-        
-        return jsonify({'message': 'Project cannot be created successfully: Project ID already exists', 'success': False}), 201
 
-
+        return jsonify({'message': 'Project ID already exists', 'success': False}), 409
     except Exception as e:
         return jsonify({'message': str(e), 'success': False}), 500
 
@@ -201,7 +208,6 @@ def get_project_info():
     except Exception as e:
         return jsonify({'message': str(e), 'success': False}), 500
 
-
 @app.route('/join_project', methods=['POST'])
 def join_project():
     data = request.get_json()
@@ -220,6 +226,5 @@ def join_project():
     except Exception as e:
         return jsonify({'message': str(e), 'success': False}), 500
 
-        
 if __name__ == '__main__':
     app.run(debug=True)
