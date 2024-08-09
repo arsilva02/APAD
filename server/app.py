@@ -101,13 +101,12 @@ def check_out():
     project_id = data.get('projectId')
     hw_name = data.get('hwName')
     qty = data.get('quantity')
-    username = data.get('username')
 
-    if not all([project_id, hw_name, qty, username]):
+    if not all([project_id, hw_name, qty]):
         return jsonify({'message': 'Missing required fields', 'success': False}), 400
 
     try:
-        success = checkOutHW(client, project_id, hw_name, qty, username)
+        success = checkOutHW(client, project_id, hw_name, qty)
         if success:
             return jsonify({'message': 'Hardware checked out successfully', 'success': True}), 200
         else:
@@ -122,13 +121,12 @@ def check_in():
     project_id = data.get('projectId')
     hw_name = data.get('hwName')
     qty = data.get('quantity')
-    username = data.get('username')
 
-    if not all([project_id, hw_name, qty, username]):
+    if not all([project_id, hw_name, qty]):
         return jsonify({'message': 'Missing required fields', 'success': False}), 400
 
     try:
-        success = checkInHW(client, project_id, hw_name, qty, username)
+        success = checkInHW(client, project_id, hw_name, qty)
         if success:
             return jsonify({'message': 'Hardware checked in successfully', 'success': True}), 200
         else:
