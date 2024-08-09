@@ -149,17 +149,16 @@ def get_user_projects_list():
     if not username:
         return jsonify({"error": "Username is required"}), 400
 
-    projects = getUserProjectsList(client, username)
-    if projects is False:
-        return jsonify({"error": "Unable to retrieve user projects"}), 500
+    try:
+        projects = getUserProjectsList(client, username)
+        if projects is False:
+            return jsonify({"error": "Unable to retrieve user projects"}), 500
+        
+        # If projects are a list of strings, do not try to access as dictionaries
+        return jsonify({"projects": [{"project_id": project} for project in projects], "success": True}), 200
 
-    # Get hardware usage for each project
-    for project in projects:
-        project_id = project.get("project_id")
-        hw_sets = queryHardwareSet(client, project_id)  # Modify this to get hardware sets for the project
-        project["hw_sets"] = hw_sets
-
-    return jsonify({"projects": projects})
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
 @app.route('/create_project', methods=['POST'])
@@ -168,12 +167,13 @@ def create_project():
     project_name = data.get('project_name')
     project_id = data.get('project_id')
     description = data.get('description')
+    username = data.get('username')
 
-    if not all([project_name, project_id, description]):
+    if not all([project_name, project_id, description, username]):
         return jsonify({'message': 'Missing required fields', 'success': False}), 400
 
     try:
-        check = createProject(client, project_name, project_id, description) #Check is project is created
+        check = createProject(client, project_name, project_id, description, username) #Check is project is created
         if check:
             return jsonify({'message': 'Project created successfully', 'success': True}), 201
         

@@ -83,13 +83,14 @@ def joinProject(client, username, projectId):
 
 # Function to get the list of projects for a user
 def getUserProjectsList(client, username):
-    # Get and return the list of projects a user is part of
     try:
         user = __queryUser(client, username)
         if not user:
             raise Exception("User not found.")
-        return user.get("projects", [])
-    except Exception as username:
-        print(f"Error retrieving user projects list: {username}")
+        
+        # Assuming the user document has a 'projects' field that is a list of project details
+        return user.get("projects", [])  # Ensure this is a list of dictionaries with project details
+    except Exception as e:
+        print(f"Error retrieving user projects list: {e}")
         return False
 
