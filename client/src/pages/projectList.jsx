@@ -31,28 +31,41 @@ const ProjectsList = () => {
     navigate("/hardware", { state: { project } });
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("username"); // Remove user info from localStorage
+    navigate("/login"); // Redirect to the login page
+  };
+
   return (
     <>
       <Navbar />
       <div className="dashboard-container">
-        <div>
-          <br></br>
-          <br></br>
-          <br></br>
-          <br></br>
-          <br></br>
-          <br></br>
-          <h2>Welcome, {username}</h2>
-          <p>Here are your current projects:</p>
-          <div className="dashboard-actions">
-            <Link to={"/project"}>
-              <button className="ProjectButton">Create New Project</button>
-            </Link>{" "}
-            &nbsp;&nbsp;&nbsp;
-            <Link to={"/newProject"}>
-              <button className="ProjectButton">Login with Project ID</button>
-            </Link>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div className="afterLogin">
+            <br />
+            <h2>Welcome, {username}</h2>
           </div>
+          <div>
+            <button onClick={handleLogout} className="LogoutButton">
+              Logout
+            </button>
+          </div>
+        </div>
+        <p>Here are your current projects:</p>
+        <div className="dashboard-actions">
+          <Link to={"/project"}>
+            <button className="ProjectButton">Create New Project</button>
+          </Link>{" "}
+          &nbsp;&nbsp;&nbsp;
+          <Link to={"/newProject"}>
+            <button className="ProjectButton">Login with Project ID</button>
+          </Link>
         </div>
         {message && <p className="error-message">{message}</p>}
       </div>

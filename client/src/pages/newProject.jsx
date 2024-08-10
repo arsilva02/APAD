@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "./navBar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const NewProject = () => {
@@ -9,6 +9,7 @@ const NewProject = () => {
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState("");
   const username = localStorage.getItem("username"); // Get the username from localStorage
+  const navigate = useNavigate(); // Initialize navigate function
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
@@ -23,6 +24,11 @@ const NewProject = () => {
         }
       );
       setMessage(response.data.message);
+
+      if (response.data.success) {
+        // Redirect to the /projectList page if the project is created successfully
+        navigate("/projectList");
+      }
     } catch (error) {
       if (error.response) {
         setMessage(error.response.data.message);

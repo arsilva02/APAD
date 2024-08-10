@@ -101,7 +101,7 @@ def updateUsage(client, projectId, hwSetName, qty):
             return True  # successful update
 
     return False  # failed update
-        
+
 
 # Function to check out hardware for a project
 def checkOutHW(client, projectId, hwSetName, qty):
@@ -113,6 +113,8 @@ def checkOutHW(client, projectId, hwSetName, qty):
     if project and hw_set:
         if hwSetName in project['hwSets']:
             current_availability = hw_set['availability']
+            current_project_usage = project['hwSets'][hwSetName]
+            print(current_project_usage)
             if qty <= current_availability:
                 # Update availability in the hardware set
                 new_availability = current_availability - qty
@@ -134,17 +136,20 @@ def checkInHW(client, projectId, hwSetName, qty):
     if project and hw_set:
         cap = hw_set['capacity']  # grab hw_set capacity
         availability = hw_set['availability']  # grab availability
-
+        current_project_usage = project['hwSets'][hwSetName]
+        #print("Current project usage: ",current_project_usage)
         if qty > availability:  # if the quantity requested is more than the availability
             return False  # return error
-
-        new_availability = availability + qty  # reduce availability by quantity checked in
-
-        # Update the project's hwSets field with the quantity
-        updateUsage(client, projectId, hwSetName, -qty)
-
+        if current_project_usage ==0 and qty:
+            return False #cannot be negative
+        if current_project_usage < qty:
+            return False
+        else:
+            new_availability = availability + qty  # reduce availability by quantity checked in
+            updateUsage(client, projectId, hwSetName, -qty)
+            return hardwareDatabase.updateAvailability(client, hwSetName, new_availability)
         # Update availability in the database
-        return hardwareDatabase.updateAvailability(client, hwSetName, new_availability)
+        
 
     else:
         return False  # returns false if project or hardware set does not exist

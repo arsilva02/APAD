@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "./navBarHardware";
 import axios from "axios";
 import "./resource.css"; // Import custom CSS for styling
@@ -7,7 +7,7 @@ import "./resource.css"; // Import custom CSS for styling
 const Hardware = () => {
   const location = useLocation();
   const { project, username } = location.state || {}; // Retrieve project and username from state
-
+  const navigate = useNavigate();
   const [hardwareData, setHardwareData] = useState([]); // To store hardware data
   const [requestAmount, setRequestAmount] = useState({}); // To store requested amounts for check-in/out
 
@@ -115,9 +115,19 @@ const Hardware = () => {
       });
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("username"); // Remove user info from localStorage
+    navigate("/"); // Redirect to the login page
+  };
+
   return (
     <>
       <Navbar />
+      <div className="alignButtonLogout">
+        <button onClick={handleLogout} className="LogoutButton">
+          Logout
+        </button>
+      </div>
       <div className="hardware-container">
         <h2 className="hardware-title">Project: {project.projectId}</h2>
         <p className="hardware-subtitle">User: {username}</p>

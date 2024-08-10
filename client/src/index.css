@@ -59,6 +59,25 @@ body {
   box-sizing: border-box;
 }
 
+.LogoutButton {
+  background-color: #bf5700;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.alignButtonLogout {
+  margin-left: 1220px;
+  margin-top: 10px;
+}
+
+.afterLogin {
+  margin-top: 100px;
+  margin-left: 670px;
+}
+
 .alignText {
   padding-left: 600px;
 }
@@ -141,9 +160,9 @@ body {
   margin-left: 600px;
 }
 
-.buttonPlace{
+.buttonPlace {
   margin-left: 270px;
-  padding:15px;
+  padding: 15px;
 }
 
 .project-list {
@@ -171,7 +190,7 @@ body {
   margin: 5px 0;
 }
 
-.ProjectButton{
+.ProjectButton {
   width: 170px;
   padding: 10px 20px;
   background-color: #bf5700;
