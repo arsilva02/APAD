@@ -140,6 +140,9 @@ def checkInHW(client, projectId, hwSetName, qty):
 
         new_availability = availability + qty  # reduce availability by quantity checked in
 
+        # Update the project's hwSets field with the quantity
+        updateUsage(client, projectId, hwSetName, -qty)
+
         # Update availability in the database
         return hardwareDatabase.updateAvailability(client, hwSetName, new_availability)
 

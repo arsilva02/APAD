@@ -2,172 +2,166 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "./navBarHardware";
 import axios from "axios";
-import "./resource.css"; // Import the CSS file
+import "./resource.css"; // Import custom CSS for styling
 
-const Resource = () => {
+const Hardware = () => {
   const location = useLocation();
   const { project, username } = location.state || {}; // Retrieve project and username from state
 
-  const [resources, setResources] = useState([]);
+  const [hardwareData, setHardwareData] = useState([]); // To store hardware data
+  const [requestAmount, setRequestAmount] = useState({}); // To store requested amounts for check-in/out
 
   useEffect(() => {
-    if (project && project.project_id && username) {
-      // Fetch hardware data based on projectId and username
+    fetchHardwareData();
+  }, [project]);
+
+  const fetchHardwareData = () => {
+    if (project && project.projectId) {
       axios
-        .post("http://localhost:5000/get_hw_info", {
-          project_id: project.project_id,
-          username,
+        .post("http://localhost:5000/get_combined_project_info", {
+          project_id: project.projectId,
         })
         .then((response) => {
           if (response.data.success) {
-            // Update state with fetched hardware data
-            const hwInfo = response.data.hw_info;
-
-            // Format hwInfo into the format expected by the frontend
-            const formattedResources = [
-              {
-                hw_name: hwInfo.hwName,
-                capacity: hwInfo.capacity,
-                available: hwInfo.availability,
-                request: 0, // Initial request value set to 0
-              },
-            ];
-
-            setResources(formattedResources);
+            console.log(
+              "Combined data received from backend:",
+              response.data.project
+            );
+            setHardwareData(response.data.project.hw_sets_details);
           } else {
             console.error(
-              "Error fetching hardware info:",
+              "Error fetching combined project info:",
               response.data.message
             );
           }
         })
         .catch((error) => {
-          console.error("Error fetching hardware info:", error);
+          console.error(
+            "Error fetching combined project info:",
+            error.response ? error.response.data : error.message
+          );
         });
     }
-  }, [project, username]);
+  };
 
-  const handleInputChange = (e, hwSet) => {
-    const { value } = e.target;
-    setResources((prevResources) =>
-      prevResources.map((resource) =>
-        resource.hw_name === hwSet.hw_name
-          ? { ...resource, request: parseInt(value) || 0 }
-          : resource
-      )
-    );
+  const handleInputChange = (e, hwSetName) => {
+    setRequestAmount({
+      ...requestAmount,
+      [hwSetName]: parseInt(e.target.value, 10) || 0,
+    });
   };
 
   const handleCheckIn = (hwSet) => {
-    setResources((prevResources) =>
-      prevResources.map((resource) => {
-        if (resource.hw_name === hwSet.hw_name) {
-          const newAvailable = resource.available + resource.request;
-          if (newAvailable <= resource.capacity) {
-            return { ...resource, available: newAvailable, request: 0 };
-          } else {
-            alert(
-              $,
-              { hwSet: hw_name },
-              "availability cannot exceed its capacity."
-            );
-          }
-        }
-        return resource;
+    const amount = requestAmount[hwSet.hw_name] || 0;
+    const newAvailable = hwSet.available + amount;
+
+    if (newAvailable > hwSet.capacity) {
+      alert(
+        `Check-in failed. Availability cannot exceed capacity for ${hwSet.hw_name}.`
+      );
+      return;
+    }
+
+    axios
+      .post("http://localhost:5000/check_in", {
+        projectId: project.projectId,
+        hwName: hwSet.hw_name,
+        quantity: amount,
+        userId: username,
       })
-    );
+      .then((response) => {
+        if (response.data.success) {
+          alert(`${amount} units checked in successfully for ${hwSet.hw_name}`);
+          fetchHardwareData(); // Refresh hardware data
+        } else {
+          alert("Check-in failed. Please try again.");
+        }
+      })
+      .catch((error) => {
+        console.error(
+          "Error during check-in:",
+          error.response ? error.response.data : error.message
+        );
+        alert("An error occurred during check-in.");
+      });
   };
 
   const handleCheckOut = (hwSet) => {
-    setResources((prevResources) =>
-      prevResources.map((resource) => {
-        if (resource.hw_name === hwSet.hw_name) {
-          const newAvailable = resource.available - resource.request;
-          if (newAvailable >= 0) {
-            return { ...resource, available: newAvailable, request: 0 };
-          } else {
-            alert($, { hwSet: hw_name }, "availability cannot be negative.");
-          }
-        }
-        return resource;
+    const amount = requestAmount[hwSet.hw_name] || 0;
+
+    axios
+      .post("http://localhost:5000/check_out", {
+        projectId: project.projectId,
+        hwName: hwSet.hw_name,
+        quantity: amount,
+        userId: username,
       })
-    );
+      .then((response) => {
+        if (response.data.success) {
+          alert(
+            `${amount} units checked out successfully for ${hwSet.hw_name}`
+          );
+          fetchHardwareData(); // Refresh hardware data
+        } else {
+          alert("Check-out failed. Please try again.");
+        }
+      })
+      .catch((error) => {
+        console.error(
+          "Error during check-out:",
+          error.response ? error.response.data : error.message
+        );
+        alert("An error occurred during check-out.");
+      });
   };
 
   return (
     <>
       <Navbar />
-      <div className="homeTop">
-        <h2>Project: {project.project_id}</h2>
-        <p>User: {username}</p>
-        {/* Display hardware sets and actions */}
-      </div>
-      <div className="otherParagraph">
-        Please feel free to Return or Avail Items:
-      </div>
-      <div className="resource">
-        <table className="resourceTable">
-          <thead>
-            <tr>
-              <th>Hardware Set</th>
-              <th>Capacity</th>
-              <th>Availability</th>
-              <th>Request/Return</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {resources.map((hwSet) => (
-              <tr key={hwSet.hw_name}>
-                <td>{hwSet.hw_name}</td>
-                <td>
+      <div className="hardware-container">
+        <h2 className="hardware-title">Project: {project.projectId}</h2>
+        <p className="hardware-subtitle">User: {username}</p>
+        <div className="hardware-info">
+          <h3>Hardware Sets Information</h3>
+          {hardwareData.length > 0 ? (
+            hardwareData.map((hwSet, index) => (
+              <div key={index} className="hardware-set">
+                <h4>{hwSet.hw_name}</h4>
+                <p>Capacity: {hwSet.capacity}</p>
+                <p>Available: {hwSet.available}</p>
+                <p>Usage in Project: {hwSet.project_usage}</p>
+                <div className="hardware-actions">
                   <input
                     type="number"
-                    name="capacity"
-                    value={hwSet.capacity}
-                    readOnly
+                    min="0"
+                    placeholder="Enter value to check in or check out"
+                    onChange={(e) => handleInputChange(e, hwSet.hw_name)}
                     className="textBox1"
                   />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    name="available"
-                    value={hwSet.available}
-                    readOnly
-                    className="textBox1"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    name="request"
-                    value={hwSet.request || 0}
-                    onChange={(e) => handleInputChange(e, hwSet)}
-                    className="textBox1"
-                  />
-                </td>
-                <td className="resourceActions">
+                  &nbsp;&nbsp;&nbsp;
                   <button
-                    className="ButtonHardware"
                     onClick={() => handleCheckIn(hwSet)}
+                    className="routerButton"
                   >
                     Check In
                   </button>
+                  &nbsp;&nbsp;&nbsp;
                   <button
-                    className="ButtonHardware"
                     onClick={() => handleCheckOut(hwSet)}
+                    className="routerButton"
                   >
                     Check Out
                   </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No hardware data available.</p>
+          )}
+        </div>
       </div>
     </>
   );
 };
 
-export default Resource;
+export default Hardware;

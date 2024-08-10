@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
 from flask_cors import CORS
-from projectsDatabase import createProject, queryProject, createProject, joinUser, updateUsage, checkOutHW, checkInHW
+from projectsDatabase import createProject, queryProject, joinUser, updateUsage, checkOutHW, checkInHW
 from usersDatabase import addUser, __queryUser, login, joinProject, getUserProjectsList
 from hardwareDatabase import createHardwareSet, queryHardwareSet, updateAvailability, requestSpace, getAllHwNames
 
@@ -80,18 +80,61 @@ def get_all_hw_names():
 @app.route('/get_hw_info', methods=['POST'])
 def get_hw_info():
     data = request.get_json()
-    hw_name = data.get('hwName')
+    project_id = data.get('project_id')
 
-    if not hw_name:
-        return jsonify({'message': 'Missing hwName', 'success': False}), 400
+    if not project_id:
+        return jsonify({'message': 'Missing project_id', 'success': False}), 400
 
     try:
-        hw_info = queryHardwareSet(client, hw_name)
-        if hw_info:
-            hw_info['_id'] = str(hw_info['_id'])  # Convert ObjectId to string for JSON serialization
+        project_info = db.projects.find_one({'projectId': project_id}, {'_id': 0, 'hwSets': 1})
+
+        if project_info and 'hwSets' in project_info:
+            hw_info = [
+                {"hw_name": hw_name, "capacity": capacity, "available": capacity}
+                for hw_name, capacity in project_info['hwSets'].items()
+            ]
             return jsonify({'hw_info': hw_info, 'success': True}), 200
         else:
-            return jsonify({'message': 'Hardware set not found', 'success': False}), 404
+            return jsonify({'message': 'Project or hardware set not found', 'success': False}), 404
+
+    except Exception as e:
+        return jsonify({'message': str(e), 'success': False}), 500
+    
+@app.route('/get_combined_project_info', methods=['POST'])
+def get_combined_project_info():
+    data = request.get_json()
+    project_id = data.get('project_id')
+
+    if not project_id:
+        return jsonify({'message': 'Missing project_id', 'success': False}), 400
+
+    try:
+        # Fetch project info
+        project_info = queryProject(client, project_id)
+        if not project_info:
+            return jsonify({'message': 'Project not found', 'success': False}), 404
+
+        # Fetch hardware details
+        hw_sets_details = []
+        for hw_name in project_info.get("hwSets", {}):
+            hw_info = queryHardwareSet(client, hw_name)
+            if hw_info:
+                hw_sets_details.append({
+                    "hw_name": hw_info["hwName"],
+                    "capacity": hw_info["capacity"],
+                    "available": hw_info["availability"],
+                    "project_usage": project_info["hwSets"][hw_name]  # Usage specific to this project
+                })
+
+        return jsonify({
+            'project': {
+                'project_name': project_info['projectName'],
+                'project_id': project_info['projectId'],
+                'description': project_info['description'],
+                'hw_sets_details': hw_sets_details
+            },
+            'success': True
+        }), 200
 
     except Exception as e:
         return jsonify({'message': str(e), 'success': False}), 500
@@ -102,13 +145,13 @@ def check_out():
     project_id = data.get('projectId')
     hw_name = data.get('hwName')
     qty = data.get('quantity')
-    user_id = data.get('userId')
+    
 
-    if not all([project_id, hw_name, qty, user_id]):
+    if not all([project_id, hw_name, qty]):
         return jsonify({'message': 'Missing required fields', 'success': False}), 400
 
     try:
-        success = checkOutHW(client, project_id, hw_name, qty, user_id)
+        success = checkOutHW(client, project_id, hw_name, qty)
         if success:
             return jsonify({'message': 'Hardware checked out successfully', 'success': True}), 200
         else:
@@ -122,14 +165,13 @@ def check_in():
     data = request.get_json()
     project_id = data.get('projectId')
     hw_name = data.get('hwName')
-    qty = data.get('quantity')
-    user_id = data.get('userId')
+    qty = data.get('quantity')  
 
-    if not all([project_id, hw_name, qty, user_id]):
+    if not all([project_id, hw_name, qty]):
         return jsonify({'message': 'Missing required fields', 'success': False}), 400
 
     try:
-        success = checkInHW(client, project_id, hw_name, qty, user_id)
+        success = checkInHW(client,project_id, hw_name, qty)
         if success:
             return jsonify({'message': 'Hardware checked in successfully', 'success': True}), 200
         else:

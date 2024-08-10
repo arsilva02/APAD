@@ -1,83 +1,67 @@
-body {
-    color: black;
-  }
-  
-  .nav {
-    background-color: #bf5700;
-    color: #ffffff;
-    text-align: center;
-    padding-top: 25px;
-    padding-bottom: 25px;
-  }
-  
-  
-  .homeTop {
-    padding-top: 40px;
-    padding-left: 1250px;
-  }
-  
-  .textBox1 {
-    padding: 10px;
-    background-color: #ffffff;
-    border-color: #bf5700;
-    border-width: 2px;
-    border-radius: 15px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .alignText {
-    padding-left: 600px;
-  }
-  
-  .ButtonSign {
-    padding: 10px;
-    background-color: #bf5700;
-    color: #ffffff;
-    border-radius: 10px;
-    border: none;
-    margin-top: 10px;
-    margin-left: 30px;
-  }
-  
-  
-  .ButtonHardware {
-    padding: 10px;
-    background-color: #bf5700;
-    color: #ffffff;
-    border-radius: 10px;
-    border: none;
-    margin-top: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
-  }
-  
-  .resource {
-    margin-top: 80px;
-    
-  }
-  
-  .resourceTable {
-    width: 100%;
-    border-collapse: collapse;
-    
-  }
-  
-  .resourceTable th, .resourceTable td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-  }
-  
-  .resourceTable th {
-    background-color: #f2f2f2;
-    color: #ffffff;
-    background-color: #bf5700;
-  }
-  
-  .resourceActions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
+.hardware-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hardware-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.hardware-subtitle {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.hardware-info {
+  margin-top: 20px;
+}
+
+.hardware-set {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+.hardware-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.hardware-input {
+  width: 100px;
+  margin-right: 10px;
+  padding: 5px;
+}
+
+.hardware-button {
+  padding: 5px 10px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.checkin-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.checkout-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.textBox1 {
+  margin-left: 320px;
+  padding-left: 10px;
+  background-color: #ffffff;
+  border-color: #bf5700;
+  border-width: 2px;
+  border-radius: 15px;
+  width: 20%;
+  box-sizing: border-box;
+}
