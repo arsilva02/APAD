@@ -82,7 +82,7 @@ const Hardware = () => {
           "Error during check-in:",
           error.response ? error.response.data : error.message
         );
-        alert("An error occurred during check-in.");
+        alert("An error occurred during check-in. Provide a proper value");
       });
   };
 
@@ -103,7 +103,7 @@ const Hardware = () => {
           );
           fetchHardwareData(); // Refresh hardware data
         } else {
-          alert("Check-out failed. Please try again.");
+          alert("Check-out failed. Please try again with proper value");
         }
       })
       .catch((error) => {
@@ -111,7 +111,9 @@ const Hardware = () => {
           "Error during check-out:",
           error.response ? error.response.data : error.message
         );
-        alert("An error occurred during check-out.");
+        alert(
+          "An error occurred during check-out. Please provide a proper value"
+        );
       });
   };
 
@@ -144,7 +146,7 @@ const Hardware = () => {
                   <input
                     type="number"
                     min="0"
-                    placeholder="Enter value to check in or check out"
+                    placeholder="Enter whole number"
                     onChange={(e) => handleInputChange(e, hwSet.hw_name)}
                     className="textBox1"
                   />

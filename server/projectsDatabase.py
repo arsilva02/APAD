@@ -114,7 +114,8 @@ def checkOutHW(client, projectId, hwSetName, qty):
         if hwSetName in project['hwSets']:
             current_availability = hw_set['availability']
             current_project_usage = project['hwSets'][hwSetName]
-            print(current_project_usage)
+            if qty < 0:
+                return False #qty can never be negative
             if qty <= current_availability:
                 # Update availability in the hardware set
                 new_availability = current_availability - qty
@@ -137,10 +138,11 @@ def checkInHW(client, projectId, hwSetName, qty):
         cap = hw_set['capacity']  # grab hw_set capacity
         availability = hw_set['availability']  # grab availability
         current_project_usage = project['hwSets'][hwSetName]
-        #print("Current project usage: ",current_project_usage)
-        if qty > availability:  # if the quantity requested is more than the availability
+        if qty <0:
+            return False # quantity can never be negative
+        if qty > current_project_usage:  # if the quantity requested is more than the availability
             return False  # return error
-        if current_project_usage ==0 and qty:
+        if current_project_usage == 0 and qty:
             return False #cannot be negative
         if current_project_usage < qty:
             return False
